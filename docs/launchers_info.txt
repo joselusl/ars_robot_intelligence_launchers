@@ -3,7 +3,8 @@ source $WORKSPACE/install/setup.bash
 
 # compile
 colcon build
-colcon build --packages-up-to ars_remote_controller
+colcon build --symlink-install
+colcon build --symlink-install --packages-up-to ars_remote_controller
 
 # clean
 rm -rf build/ install/ log/
