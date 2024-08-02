@@ -1,0 +1,121 @@
+# source
+source $WORKSPACE/install/setup.bash
+
+# compile
+colcon build
+colcon build --packages-up-to ars_remote_controller
+
+# clean
+rm -rf build/ install/ log/
+
+
+# rqt tools
+rqt
+rqt_graph
+rqt_plot
+
+
+
+
+
+## VISUALIZATION
+
+
+# rviz for visualization
+# config by default
+rviz2
+# with ars config
+ros2 launch ars_robot_intelligence_launchers rviz_visualization.launch.py
+
+
+
+
+
+
+
+
+## ROBOT INTELLIGENCE - COMPONENTS
+
+# Remote controller
+# To drone
+ros2 launch ars_robot_intelligence_launchers robot_remote_controller.launch.py robot_cmd_stamped_topic:=/robot_cmd_stamped
+# To obst avoidance
+ros2 launch ars_robot_intelligence_launchers robot_remote_controller.launch.py robot_cmd_stamped_topic:=/robot_cmd_ctr_stamped
+
+
+
+# Reactive obstacle avoidance
+# DJI M100
+ros2 launch ars_robot_intelligence_launchers robot_obstacle_avoidance_react.launch.py config_param_obstacle_avoidance_react_yaml_file:="obstacle_avoidance_react/config_obstacle_avoidance_react_dji_m100.yaml"
+# DJI Tello
+ros2 launch ars_robot_intelligence_launchers robot_obstacle_avoidance_react.launch.py config_param_obstacle_avoidance_react_yaml_file:="obstacle_avoidance_react/config_obstacle_avoidance_react_dji_tello.yaml"
+
+
+
+# Sensor fusion State estimator
+ros2 launch ars_robot_intelligence_launchers robot_msf_state_estimator.launch.py
+
+
+
+# Sensor fusion SLAM
+ros2 launch ars_robot_intelligence_launchers robot_msf_slam.launch.py
+
+
+
+# Motion controller PID - NEW
+# DJI M100 Without state estimator and connected to aerial vehicle
+ros2 launch ars_robot_intelligence_launchers robot_motion_controller_pid.launch.py flag_connect_to_aerial_vehicle:=True flag_use_state_estim:=False config_param_motion_controller_pid_yaml_file:="motion_controller_pid/config_motion_controller_pid_dji_m100.yaml"
+# DJI M100 With state estimator and reactive obstacle avoidance
+ros2 launch ars_robot_intelligence_launchers robot_motion_controller_pid.launch.py flag_connect_to_aerial_vehicle:=False flag_use_state_estim:=True config_param_motion_controller_pid_yaml_file:="motion_controller_pid/config_motion_controller_pid_dji_m100.yaml"
+# DJI Tello Without state estimator and connected to aerial vehicle
+ros2 launch ars_robot_intelligence_launchers robot_motion_controller_pid.launch.py flag_connect_to_aerial_vehicle:=True flag_use_state_estim:=False config_param_motion_controller_pid_yaml_file:="motion_controller_pid/config_motion_controller_pid_dji_tello.yaml"
+# DJI Tello With state estimator and reactive obstacle avoidance
+ros2 launch ars_robot_intelligence_launchers robot_motion_controller_pid.launch.py flag_connect_to_aerial_vehicle:=False flag_use_state_estim:=True config_param_motion_controller_pid_yaml_file:="motion_controller_pid/config_motion_controller_pid_dji_tello.yaml"
+
+
+
+# Path follower
+# Without state estimator
+ros2 launch ars_robot_intelligence_launchers robot_path_follower.launch.py
+# With state estimator
+ros2 launch ars_robot_intelligence_launchers robot_path_follower.launch.py flag_use_state_estim:=True
+
+
+
+# Path planner
+# Simulated environment
+# Without state estimator
+ros2 launch ars_robot_intelligence_launchers robot_path_planner.launch.py flag_use_state_estim:=False flag_use_slam_map:=False config_param_path_planner_core_yaml_file:="path_planner/config_path_planner_core_sim_env.yaml"
+# With state estimator and mapper
+ros2 launch ars_robot_intelligence_launchers robot_path_planner.launch.py flag_use_state_estim:=True flag_use_slam_map:=False config_param_path_planner_core_yaml_file:="path_planner/config_path_planner_core_sim_env.yaml"
+# With state estimator and slam map
+ros2 launch ars_robot_intelligence_launchers robot_path_planner.launch.py flag_use_state_estim:=True flag_use_slam_map:=True config_param_path_planner_core_yaml_file:="path_planner/config_path_planner_core_sim_env.yaml"
+# AeRoLab environment
+# Without state estimator
+ros2 launch ars_robot_intelligence_launchers robot_path_planner.launch.py flag_use_state_estim:=False flag_use_slam_map:=False config_param_path_planner_core_yaml_file:="path_planner/config_path_planner_core_aerolab.yaml"
+# With state estimator and mapper
+ros2 launch ars_robot_intelligence_launchers robot_path_planner.launch.py flag_use_state_estim:=True flag_use_slam_map:=False config_param_path_planner_core_yaml_file:="path_planner/config_path_planner_core_aerolab.yaml"
+# With state estimator and slam map
+ros2 launch ars_robot_intelligence_launchers robot_path_planner.launch.py flag_use_state_estim:=True flag_use_slam_map:=True config_param_path_planner_core_yaml_file:="path_planner/config_path_planner_core_aerolab.yaml"
+
+
+
+
+
+
+## INPUTS
+
+# Path publisher
+#
+bash $ARS_PROJECT/scripts/publish_path_empty.sh
+#
+bash $ARS_PROJECT/scripts/publish_path_01.sh
+#
+bash $ARS_PROJECT/scripts/publish_path_02.sh
+#
+bash $ARS_PROJECT/scripts/publish_path_03.sh
+#
+bash $ARS_PROJECT/scripts/publish_path_07.sh
+
+
+
